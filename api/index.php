@@ -15,7 +15,7 @@ if (isset($update['message'])) {
 
         if (strpos($messageText, '!psv') === 0) {
             $searchTerm = trim(str_replace('!psv', '', $messageText));
-            $jsonUrl = "https://psvstorebot.000webhostapp.com/Planilha.php";
+            $jsonUrl = "https://deivid-bot.vercel.app/api/Planilha.php";
             $jsonData = @file_get_contents($jsonUrl);
 
             if ($jsonData !== false) {
