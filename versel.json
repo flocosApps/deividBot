@@ -1,0 +1,12 @@
+{
+  "functions" : {
+    "api/*.php" : {
+      "runtime" : "versel-php@0.6.0"
+    }
+  },
+  "routes" : [
+    {"src" : "/api/(.*)", "dest" : "/api/index.php"},
+    {"src" : "/api", "dest" : "/api/index.php"},
+    {"src" : "i/(.*)", "dest" : "/index.html"}
+  ]
+}
