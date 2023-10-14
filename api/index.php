@@ -1,5 +1,5 @@
 <?php
-$token = '6521051141:AAEhBYpmarKOdkPoQe9IGMU_zLb8WhXaQ5E';
+$token = '6408511720:AAEgubuvRKXtx74IAfDZAswrZHL_ZUWS_gk';
 
 $apiUrl = "https://api.telegram.org/bot$token";
 
