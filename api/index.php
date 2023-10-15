@@ -26,8 +26,8 @@ function getWebhookInfo() {
 
 function getDataFromSheet() {
   // Substitua 'ID_DA_SUA_PLANILHA' pelo ID da sua planilha do Google Sheets
-  $spreadsheetId = '1ygOrIsULzQ_kqcHOrE9fQy02aif4Q44Q_G_FXmkqZFQ';
-  $sheetName = 'Dados';
+  $spreadsheetId = '1rXPV0InJSjMrcVbCoS7_UJrzblmSBfA2sepJ5Bvlhkk';
+  $sheetName = 'paines';
   $data = file_get_contents("https://docs.google.com/spreadsheets/u/1/d/$spreadsheetId/gviz/tq?tqx=out:csv&sheet=$sheetName");
   $lines = explode(PHP_EOL, $data);
   $header = str_getcsv(array_shift($lines));
