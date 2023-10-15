@@ -1,5 +1,5 @@
 <?php
-$token = '6682858085:AAGTizUneVNVj4eUcgdD00agXkF5FpM783c';
+$token = '6408511720:AAEgubuvRKXtx74IAfDZAswrZHL_ZUWS_gk';
 $apiUrl = "https://api.telegram.org/bot$token";
 $appUrl = 'https://deivid-bot.vercel.app/api/index.php';
 
