@@ -1,7 +1,7 @@
 <?php
 $token = '6408511720:AAEgubuvRKXtx74IAfDZAswrZHL_ZUWS_gk';
 $apiUrl = "https://api.telegram.org/bot$token";
-$appUrl = 'https://deivid-bot.vercel.app/api/index.php';
+$appUrl = 'https://deivid-bot.vercel.app/api';
 
 function setWebhook() {
   global $apiUrl, $appUrl;
@@ -26,8 +26,8 @@ function getWebhookInfo() {
 
 function getDataFromSheet() {
   // Substitua 'ID_DA_SUA_PLANILHA' pelo ID da sua planilha do Google Sheets
-  $spreadsheetId = '1rXPV0InJSjMrcVbCoS7_UJrzblmSBfA2sepJ5Bvlhkk';
-  $sheetName = 'paines';
+  $spreadsheetId = '1ygOrIsULzQ_kqcHOrE9fQy02aif4Q44Q_G_FXmkqZFQ';
+  $sheetName = 'Dados';
   $data = file_get_contents("https://docs.google.com/spreadsheets/u/1/d/$spreadsheetId/gviz/tq?tqx=out:csv&sheet=$sheetName");
   $lines = explode(PHP_EOL, $data);
   $header = str_getcsv(array_shift($lines));
