@@ -3,27 +3,6 @@ $token = '6408511720:AAEgubuvRKXtx74IAfDZAswrZHL_ZUWS_gk';
 $apiUrl = "https://api.telegram.org/bot$token";
 $appUrl = 'https://deivid-bot.vercel.app/api';
 
-function setWebhook() {
-  global $apiUrl, $appUrl;
-  $url = $apiUrl . '/setWebhook?url=' . $appUrl;
-  $res = file_get_contents($url);
-  echo $res;
-}
-
-function checkWebhookStatus() {
-  $webhookInfo = getWebhookInfo();
-  $statusMessage = $webhookInfo ? "Webhook está ativo" : "Webhook não está configurado";
-  return $statusMessage;
-}
-
-function getWebhookInfo() {
-  global $apiUrl;
-  $url = $apiUrl . '/getWebhookInfo';
-  $response = file_get_contents($url);
-  $data = json_decode($response, true);
-  return $data['ok'] ? $data['result'] : null;
-}
-
 function getDataFromSheet() {
   // Substitua 'ID_DA_SUA_PLANILHA' pelo ID da sua planilha do Google Sheets
   $spreadsheetId = '1ygOrIsULzQ_kqcHOrE9fQy02aif4Q44Q_G_FXmkqZFQ';
@@ -116,4 +95,3 @@ function joinGroup($groupLink, $chatId) {
 
   return $response;
 }
-//setWebhook();
