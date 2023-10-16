@@ -116,4 +116,4 @@ function joinGroup($groupLink, $chatId) {
 
   return $response;
 }
-setWebhook();
+//setWebhook();
