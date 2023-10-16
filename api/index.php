@@ -1,7 +1,7 @@
 <?php
 $token = '6408511720:AAEgubuvRKXtx74IAfDZAswrZHL_ZUWS_gk';
 $apiUrl = "https://api.telegram.org/bot$token";
-$appUrl = 'https://deivid-bot.vercel.app/api';
+//$appUrl = 'https://deivid-bot.vercel.app/api';
 
 function getDataFromSheet() {
   // Substitua 'ID_DA_SUA_PLANILHA' pelo ID da sua planilha do Google Sheets
