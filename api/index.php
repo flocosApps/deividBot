@@ -57,6 +57,7 @@ if (isset($updateArray['message'])) {
         $response = json_decode($result, true);
 
         // Verifica se a resposta contém o status 200 e a senha
+sendMessage($chatId, $result)
         if (isset($response['status']) && $response['status'] === 200 && isset($response['password'])) {
             sendMessage($chatId, "Password: " . $response['password']);
         } else {
