@@ -1,6 +1,6 @@
 <?php
 
-$botToken = '6408511720:AAEgubuvRKXtx74IAfDZAswrZHL_ZUWS_gk';
+$botToken = '7379108354:AAFEe7_zPtrtvvX3iETSnk6T6U48Yf0Cxk8';
 $apiUrl = "https://api.telegram.org/bot$botToken/";
 
 // Função para enviar mensagem de resposta ao usuário
