@@ -22,13 +22,14 @@ if (isset($updateArray['message'])) {
     // Verifica se a mensagem contém o número de série
     if (!empty($text)) {
         $sn = $text;
-        $url = 'https://script.google.com/macros/s/AKfycbwVL_A2dJyq04tlasJk5-joNf2j22FhoDyHjD_XpBTh5F2FypkLpTfiwf7Q33Mb5b0arQ/exec'; // Substitua com a URL do seu App Script
+        $url = 'https://script.google.com/macros/s/AKfycbwVL_A2dJyq04tlasJk5-joNf2j22FhoDyHjD_XpBTh5F2FypkLpTfiwf7Q33Mb5b0arQ/exec';
 
         // Parâmetros da requisição
         $params = [
             'search' => $sn,
-            'url' => 'https://docs.google.com/spreadsheets/d/1tsw-O6LJ-NC3nQ4rlrQcpUUnRGBG6M3dkYQ6XPK4IXg/edit?usp=sharing', // Ajuste conforme necessário
-            'user' => 'example_user', // Ajuste conforme necessário
+            'columnID' => 'SN',
+            'url' => 'https://docs.google.com/spreadsheets/d/1tsw-O6LJ-NC3nQ4rlrQcpUUnRGBG6M3dkYQ6XPK4IXg/edit?usp=sharing',
+            'user' => 'example_user',
             'date' => date('Y-m-d H:i:s'),
             'page' => 'test'
         ];
