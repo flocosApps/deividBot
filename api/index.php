@@ -27,7 +27,7 @@ if (isset($updateArray['message'])) {
         // Parâmetros da requisição
         $params = [
             'search' => $sn,
-            'link' => 'https://docs.google.com/spreadsheets/d/1tsw-O6LJ-NC3nQ4rlrQcpUUnRGBG6M3dkYQ6XPK4IXg/edit?usp=sharing', // Ajuste conforme necessário
+            'url' => 'https://docs.google.com/spreadsheets/d/1tsw-O6LJ-NC3nQ4rlrQcpUUnRGBG6M3dkYQ6XPK4IXg/edit?usp=sharing', // Ajuste conforme necessário
             'user' => 'example_user', // Ajuste conforme necessário
             'date' => date('Y-m-d H:i:s'),
             'page' => 'test'
