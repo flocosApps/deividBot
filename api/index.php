@@ -26,12 +26,12 @@ if (isset($updateArray['message'])) {
 
         // Parâmetros da requisição
         $params = [
-            'search' => $sn,
+            'page' => 'test',
             'columnID' => 'SN',
-            'url' => 'https://docs.google.com/spreadsheets/d/1tsw-O6LJ-NC3nQ4rlrQcpUUnRGBG6M3dkYQ6XPK4IXg/edit?usp=sharing',
+            'search' => $sn,
             'user' => 'example_user',
             'date' => date('Y-m-d H:i:s'),
-            'page' => 'test'
+            'url' => 'https://docs.google.com/spreadsheets/d/1tsw-O6LJ-NC3nQ4rlrQcpUUnRGBG6M3dkYQ6XPK4IXg/edit?'
         ];
 
         // Configurações da requisição POST
