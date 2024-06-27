@@ -22,15 +22,15 @@ if (isset($updateArray['message'])) {
     // Verifica se a mensagem contém o número de série
     if (!empty($text)) {
         $sn = $text;
-        $url = 'URL_DO_APPSCRIPT'; // Substitua com a URL do seu App Script
+        $url = 'https://script.google.com/macros/s/AKfycbwVL_A2dJyq04tlasJk5-joNf2j22FhoDyHjD_XpBTh5F2FypkLpTfiwf7Q33Mb5b0arQ/exec'; // Substitua com a URL do seu App Script
 
         // Parâmetros da requisição
         $params = [
             'search' => $sn,
-            'link' => 'example_link', // Ajuste conforme necessário
+            'link' => 'https://docs.google.com/spreadsheets/d/1tsw-O6LJ-NC3nQ4rlrQcpUUnRGBG6M3dkYQ6XPK4IXg/edit?usp=sharing', // Ajuste conforme necessário
             'user' => 'example_user', // Ajuste conforme necessário
             'date' => date('Y-m-d H:i:s'),
-            'page' => 1
+            'page' => 'test'
         ];
 
         // Configurações da requisição POST
