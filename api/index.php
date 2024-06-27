@@ -1,95 +1,75 @@
 <?php
-$token = '6408511720:AAEgubuvRKXtx74IAfDZAswrZHL_ZUWS_gk';
-$apiUrl = "https://api.telegram.org/bot$token";
-$spreadsheetId = '1ygOrIsULzQ_kqcHOrE9fQy02aif4Q44Q_G_FXmkqZFQ';
-$sheetName = 'Dados';
+// Incluir o autoload do Composer para carregar as dependências
+require 'vendor/autoload.php';
 
-function getDataFromSheet() {
-  $data = file_get_contents("https://docs.google.com/spreadsheets/u/1/d/$spreadsheetId/gviz/tq?tqx=out:csv&sheet=$sheetName");
-  $lines = explode(PHP_EOL, $data);
-  $header = str_getcsv(array_shift($lines));
-  $jsonData = [];
+use GuzzleHttp\Client;
 
-  foreach ($lines as $line) {
-    $row = str_getcsv($line);
-    $rowData = array_combine($header, $row);
-    $jsonData[] = $rowData;
-  }
+// Token do seu bot do Telegram
+$botToken = '6408511720:AAEgubuvRKXtx74IAfDZAswrZHL_ZUWS_gk';
 
-  return json_encode($jsonData, JSON_PRETTY_PRINT);
-}
+// URL do script do Google Apps Script
+$googleAppsScriptUrl = 'https://script.google.com/macros/s/AKfycbwKZ1hQIyRiEwN1W7fdA5XmB5LZMk-6k6g2Z5D2tMxU6sUfjvI/exec';
 
-$update = file_get_contents("php://input");
-$update = json_decode($update, true);
+// Função para lidar com mensagens recebidas
+function handleIncomingMessage($bot, $message) {
+    global $googleAppsScriptUrl;
 
-if (isset($update['message'])) {
-  $message = $update['message'];
-  $chatId = $message['chat']['id'];
-  $messageText = $message['text'];
+    // Extrair o texto da mensagem recebida
+    $text = $message->getText();
+    $chat_id = $message->getChat()->getId();
 
-  if (strpos($messageText, '/start') === 0) {
-    $response = "Bem-vindo ao bot!\n\n";
-    $response .= "Você pode usar os seguintes comandos:\n";
-    $response .= "/psv - Pesquisar jogos na planilha\n";
-    $response .= "/addgrupo - Adicionar ao grupo\n";
-  } else if (strpos($messageText, '/psv') === 0) {
-    $searchTerm = trim(str_replace('/psv', '', $messageText));
-    $jsonData = getDataFromSheet();
-    $data = json_decode($jsonData, true);
-    $results = [];
+    // Definir parâmetros da requisição
+    $params = [
+        'page' => 'teste',
+        'columnID' => 'sn',
+        'search' => $text,
+        'user' => '',
+        'date' => ''
+    ];
 
-    foreach ($data as $game) {
-      if (isset($game['nome']) && stripos($game['nome'], $searchTerm) !== false) {
-        $results[] = $game;
-      }
+    // Fazer a requisição HTTP POST para o script do Google Apps Script
+    $client = new Client();
+    try {
+        $response = $client->post($googleAppsScriptUrl, [
+            'json' => $params
+        ]);
+
+        // Decodificar a resposta JSON
+        $responseData = json_decode($response->getBody(), true);
+
+        // Verificar se a resposta possui o campo 'password'
+        if (isset($responseData['password'])) {
+            // Enviar o password como resposta para o usuário
+            $bot->sendMessage([
+                'chat_id' => $chat_id,
+                'text' => "O password é: " . $responseData['password']
+            ]);
+        } else {
+            // Se não houver password na resposta, enviar uma mensagem de erro
+            $bot->sendMessage([
+                'chat_id' => $chat_id,
+                'text' => "Não foi possível obter o password do servidor."
+            ]);
+        }
+    } catch (Exception $e) {
+        // Em caso de erro na requisição, enviar uma mensagem de erro ao usuário
+        $bot->sendMessage([
+            'chat_id' => $chat_id,
+            'text' => "Erro ao fazer a requisição HTTP: " . $e->getMessage()
+        ]);
     }
+}
 
-    $response = "Resultados encontrados:\n\n";
+// Criação do objeto do bot
+$bot = new \TelegramBot\Api\Client($botToken);
 
-    if (!empty($results)) {
-      foreach ($results as $result) {
-        $response .= "Nome: " . $result['nome'] . "\n";
-        $response .= "Download Pkg: " . $result['game'] . "\n";
-        $response .= "Download WORK: " . $result['work'] . "\n";
-        $response .= "-----------\n";
-      }
-    } else {
-      $response = "Nenhum jogo encontrado para: $searchTerm";
+// Lidando com mensagens recebidas
+$bot->on(function ($update) use ($bot) {
+    $message = $update->getMessage();
+    if ($message !== null) {
+        handleIncomingMessage($bot, $message);
     }
-  } else if (strpos($messageText, '/addgrupo') === 0) {
-    $groupLink = trim(str_replace('/addgrupo', '', $messageText));
-    $response = joinGroup($groupLink, $chatId);
-  } else {
-    $response = "Desculpe, comando não reconhecido. Use /start para obter ajuda.";
-  }
-} else {
-  $response = "Desculpe, ocorreu um erro no processamento da mensagem.";
-}
+});
 
-if ($chatId) {
-  $sendMessageUrl = $apiUrl . "/sendMessage?chat_id=$chatId&text=" . urlencode($response);
-  file_get_contents($sendMessageUrl);
-}
-
-function joinGroup($groupLink, $chatId) {
-  $response = "Tentando ingressar no grupo...";
-
-  if (strpos($groupLink, 'https://t.me/') === 0) {
-    $groupLink = str_replace('https://t.me/', '', $groupLink);
-  }
-
-  if ($chatId) {
-    $inviteUrl = $apiUrl . "/inviteChat?chat_id=$chatId&invite_link=$groupLink";
-    $result = file_get_contents($inviteUrl);
-
-    if ($result === 'true') {
-      $response = "Você foi adicionado com sucesso ao grupo!";
-    } else {
-      $response = "Desculpe, não foi possível adicionar você ao grupo.";
-    }
-  } else {
-    $response = "Desculpe, não foi possível encontrar o grupo.";
-  }
-
-  return $response;
-}
+// Executando o bot
+$bot->run();
