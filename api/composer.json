@@ -1,0 +1,14 @@
+{
+    "name": "seu-usuario/nome-do-projeto",
+    "description": "Meu bot Telegram em PHP com integração ao Google Apps Script",
+    "require": {
+        "php": "^7.0",
+        "guzzlehttp/guzzle": "^7.0"
+    },
+    "authors": [
+        {
+            "name": "Seu Nome",
+            "email": "seu-email@example.com"
+        }
+    ]
+}
