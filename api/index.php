@@ -19,6 +19,8 @@ if (isset($updateArray['message'])) {
     $chatId = $message['chat']['id'];
     $text = $message['text'];
 
+    sendMessage($chatId, "OLA");
+
     // Verifica se a mensagem contém o número de série
     if (!empty($text)) {
         $sn = $text;
