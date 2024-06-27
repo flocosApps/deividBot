@@ -1,75 +1,70 @@
 <?php
-// Incluir o autoload do Composer para carregar as dependências
-require 'vendor/autoload.php';
 
-use GuzzleHttp\Client;
-
-// Token do seu bot do Telegram
 $botToken = '6408511720:AAEgubuvRKXtx74IAfDZAswrZHL_ZUWS_gk';
+$apiUrl = "https://api.telegram.org/bot$botToken/";
 
-// URL do script do Google Apps Script
-$googleAppsScriptUrl = 'https://script.google.com/macros/s/AKfycbwKZ1hQIyRiEwN1W7fdA5XmB5LZMk-6k6g2Z5D2tMxU6sUfjvI/exec';
-
-// Função para lidar com mensagens recebidas
-function handleIncomingMessage($bot, $message) {
-    global $googleAppsScriptUrl;
-
-    // Extrair o texto da mensagem recebida
-    $text = $message->getText();
-    $chat_id = $message->getChat()->getId();
-
-    // Definir parâmetros da requisição
-    $params = [
-        'page' => 'teste',
-        'columnID' => 'sn',
-        'search' => $text,
-        'user' => '',
-        'date' => ''
-    ];
-
-    // Fazer a requisição HTTP POST para o script do Google Apps Script
-    $client = new Client();
-    try {
-        $response = $client->post($googleAppsScriptUrl, [
-            'json' => $params
-        ]);
-
-        // Decodificar a resposta JSON
-        $responseData = json_decode($response->getBody(), true);
-
-        // Verificar se a resposta possui o campo 'password'
-        if (isset($responseData['password'])) {
-            // Enviar o password como resposta para o usuário
-            $bot->sendMessage([
-                'chat_id' => $chat_id,
-                'text' => "O password é: " . $responseData['password']
-            ]);
-        } else {
-            // Se não houver password na resposta, enviar uma mensagem de erro
-            $bot->sendMessage([
-                'chat_id' => $chat_id,
-                'text' => "Não foi possível obter o password do servidor."
-            ]);
-        }
-    } catch (Exception $e) {
-        // Em caso de erro na requisição, enviar uma mensagem de erro ao usuário
-        $bot->sendMessage([
-            'chat_id' => $chat_id,
-            'text' => "Erro ao fazer a requisição HTTP: " . $e->getMessage()
-        ]);
-    }
+// Função para enviar mensagem de resposta ao usuário
+function sendMessage($chatId, $message) {
+    global $apiUrl;
+    $url = $apiUrl . "sendMessage?chat_id=" . $chatId . "&text=" . urlencode($message);
+    file_get_contents($url);
 }
 
-// Criação do objeto do bot
-$bot = new \TelegramBot\Api\Client($botToken);
+// Captura a entrada JSON do webhook
+$update = file_get_contents("php://input");
+$updateArray = json_decode($update, true);
 
-// Lidando com mensagens recebidas
-$bot->on(function ($update) use ($bot) {
-    $message = $update->getMessage();
-    if ($message !== null) {
-        handleIncomingMessage($bot, $message);
+if (isset($updateArray['message'])) {
+    $message = $updateArray['message'];
+    $chatId = $message['chat']['id'];
+    $text = $message['text'];
+
+    // Verifica se a mensagem contém o número de série
+    if (!empty($text)) {
+        $sn = $text;
+        $url = 'URL_DO_APPSCRIPT'; // Substitua com a URL do seu App Script
+
+        // Parâmetros da requisição
+        $params = [
+            'search' => $sn,
+            'link' => 'example_link', // Ajuste conforme necessário
+            'user' => 'example_user', // Ajuste conforme necessário
+            'date' => date('Y-m-d H:i:s'),
+            'page' => 1
+        ];
+
+        // Configurações da requisição POST
+        $options = [
+            'http' => [
+                'header'  => "Content-type: application/json\r\n",
+                'method'  => 'POST',
+                'content' => json_encode($params),
+            ],
+        ];
+
+        // Cria o contexto da requisição
+        $context  = stream_context_create($options);
+
+        // Faz a requisição POST e obtém a resposta
+        $result = file_get_contents($url, false, $context);
+
+        if ($result === FALSE) {
+            sendMessage($chatId, "Erro ao acessar o App Script.");
+            exit;
+        }
+
+        // Decodifica a resposta JSON
+        $response = json_decode($result, true);
+
+        // Verifica se a resposta contém o status 200 e a senha
+        if (isset($response['status']) && $response['status'] === 200 && isset($response['password'])) {
+            sendMessage($chatId, "Password: " . $response['password']);
+        } else {
+            sendMessage($chatId, "Resposta inválida do App Script.");
+        }
+    } else {
+        sendMessage($chatId, "Por favor, forneça um número de série (SN).");
     }
-});
-
-// Executando o bot
-$bot->run();
+} else {
+    echo "Método não permitido.";
+}
